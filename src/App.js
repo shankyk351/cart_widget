@@ -4,7 +4,7 @@ import axios from 'axios';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import placeholder from './assets/images/placeholder.png';
-// import logo from './logo.svg';
+import { arrayExpression } from '@babel/types';
 
 
 
@@ -14,7 +14,11 @@ class App extends React.Component{
     super(props);
     this.state = {
       cartData: [],
-      items: []
+      items: [],
+      totalItems: 0,
+      totalPrice: 0,
+      totalDiscount: 0,
+      totalAmount: 0
     }
   }
 
@@ -26,6 +30,7 @@ class App extends React.Component{
     axios.get('https://api.myjson.com/bins/qhnfp')
     .then((res)=>{
       console.log('cart response', res.data);
+      res.data.map((item)=>item.quantity=1);
       this.setState({
         cartData: [...res.data]
       })
@@ -35,28 +40,42 @@ class App extends React.Component{
     })
   }
 
-  addItemToCart(item, discountPrice=0){;
-    discountPrice && (item.discountPrice = discountPrice);
-    this.setState({
-      items: this.state.items.concat([item])
-    });
+  addItemToCart(item, discount=0){
+    item.discountAmount = discount;
+    let isExist = false;
+    this.state.items.map((itm)=>{
+      if(itm.id==item.id){
+        isExist = true;
+      }
+    })
+
+    if(!isExist){
+      this.setState({
+        items: this.state.items.concat([item]),
+        totalItems: ++this.state.items.length,
+        totalPrice: this.state.totalPrice + item.price,
+        totalDiscount: this.state.totalDiscount + discount
+      });
+    }else{
+      alert('already exist');
+    }
   }
 
   // remove item from cart
   removeItem(item){
-    console.log('remove item', item);
     this.setState({
-      items: this.state.items.filter((itm)=>itm.id!=item.id)
+      items: this.state.items.filter((itm)=>itm.id!=item.id),
+      totalItems: --this.state.items.length,
+      totalPrice: this.state.totalPrice - item.price,
+      totalDiscount: this.state.totalDiscount - item.discountAmount
     })
   }
 
   render(){
-    const {cartData, items} = this.state;
+    const {cartData, items, totalItems, totalPrice, totalDiscount, totalAmount} = this.state;
     const noItems = <tr><td className="text-center" colSpan="4">No items added</td></tr>;
-    console.log('items render', items);
     return(
       <>
-      
         <div className="cart-App">  
           <div className="container">
             <h1 className="cart-title">Cart App</h1>
@@ -81,8 +100,8 @@ class App extends React.Component{
                     return (
                       <tr key={index}>
                         <td>{item.name}</td>
-                        <td>1</td>
-                        <td>${item.discountPrice}</td>
+                        <td>{item.quantity}</td>
+                        <td>${item.price - item.discountAmount}</td>
                         <td><button className="btn btn-danger btn-sm" onClick={()=>this.removeItem(item)}>Remove</button></td>
                       </tr>
                     )
@@ -100,7 +119,7 @@ class App extends React.Component{
                 </div>
                 <div className="row">
                   {cartData.map((item, index)=>{
-                    const discountPrice = (item.price)-(item.price*item.discount)/100;
+                    const discount = (item.price*item.discount)/100;
                     return(
                       <div className="col-md-6" key={index}>
                         <div className="card-deck">
@@ -114,9 +133,9 @@ class App extends React.Component{
                               <div className="card-footer">
                                 <div>
                                   <small className={`text-muted ${item.discount?'line-through':'price'}`}>${item.price}</small>
-                                  {item.discount ? <span className="text-muted ml-2 price">${discountPrice}</span>:''}
+                                  {item.discount ? <span className="text-muted ml-2 price">${item.price-discount}</span>:''}
                                 </div>
-                                <button className="btn btn-outline-primary btn-sm" onClick={()=>this.addItemToCart(item, discountPrice)}>Add To Cart</button>
+                                <button className="btn btn-outline-primary btn-sm" onClick={()=>this.addItemToCart(item, discount)}>Add To Cart</button>
                               </div>
                           </div>
                         </div>  
@@ -137,12 +156,12 @@ class App extends React.Component{
                     <div className="card">
                         <div className="card-body">
                           <div className="d-flex justify-content-between">
-                            <p>Items(4)</p>
-                            <p>$1070</p>
+                            <p>Items({totalItems})</p>
+                            <p>${totalPrice}</p>
                           </div>
                           <div className="d-flex justify-content-between">
                             <p>Discount</p>
-                            <p>-$128.5</p>
+                            <p>-${totalDiscount}</p>
                           </div>
                           <div className="d-flex justify-content-between">
                             <p>Type Discount</p>
@@ -151,7 +170,7 @@ class App extends React.Component{
                         </div>
                         <div className="card-footer d-flex justify-content-between">
                             <p className="m-0">Order Total</p>
-                            <h5 className="m-0">$941.5</h5>
+                            <h5 className="m-0">${totalPrice - totalDiscount}</h5>
                         </div>
                     </div>
                   </div>
