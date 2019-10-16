@@ -1,6 +1,9 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 
+
+ Click here for demo :  <a href="https://hgupta91.github.io/cart_widget/">https://hgupta91.github.io/cart_widget/</a>
+
 ## Steps to run project
 
     1. Download or clone project.
