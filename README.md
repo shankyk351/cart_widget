@@ -2,7 +2,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 
 
- Click here for demo :  <a href="https://hgupta91.github.io/cart_widget/">https://hgupta91.github.io/cart_widget/</a>
+ 
 
 ## Steps to run project
 
@@ -12,6 +12,8 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
     4. Run "npm start" to run project in browser.
     5. If not open in browser itself then open browser tab and add url "localhost:3000" and run.
 
+## Click here for demo :  
+<a href="https://hgupta91.github.io/cart_widget/">https://hgupta91.github.io/cart_widget/</a>
 
 ## Available Scripts
 
