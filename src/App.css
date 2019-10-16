@@ -52,4 +52,13 @@
 .checkout{
   margin-top: 20px;
 }
-.checkout .card{margin: 0;}
+.checkout .card{
+  margin: 0;
+}
+.quantity.btn-outline-success:hover{
+  background-color: transparent;
+  color: #28a745;
+}
+table td{
+  vertical-align: middle !important;
+}

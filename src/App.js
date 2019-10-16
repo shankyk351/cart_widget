@@ -4,9 +4,6 @@ import axios from 'axios';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import placeholder from './assets/images/placeholder.png';
-import { arrayExpression } from '@babel/types';
-
-
 
 class App extends React.Component{
 
@@ -17,8 +14,7 @@ class App extends React.Component{
       items: [],
       totalItems: 0,
       totalPrice: 0,
-      totalDiscount: 0,
-      totalAmount: 0
+      totalDiscount: 0
     }
   }
 
@@ -29,7 +25,6 @@ class App extends React.Component{
   getCartData(){
     axios.get('https://api.myjson.com/bins/qhnfp')
     .then((res)=>{
-      console.log('cart response', res.data);
       res.data.map((item)=>item.quantity=1);
       this.setState({
         cartData: [...res.data]
@@ -42,37 +37,92 @@ class App extends React.Component{
 
   addItemToCart(item, discount=0){
     item.discountAmount = discount;
+    item.priceBeforeDiscount = item.price;
+    item.priceAfterDiscount = item.price - discount;
+    
     let isExist = false;
     this.state.items.map((itm)=>{
-      if(itm.id==item.id){
+      if(itm.id===item.id){
         isExist = true;
       }
+      return true;
     })
 
     if(!isExist){
       this.setState({
         items: this.state.items.concat([item]),
-        totalItems: ++this.state.items.length,
-        totalPrice: this.state.totalPrice + item.price,
+        totalItems: this.state.items.length + 1,
+        totalPrice: this.state.totalPrice + item.priceBeforeDiscount,
         totalDiscount: this.state.totalDiscount + discount
       });
     }else{
-      alert('already exist');
+      // alert('already exist');
+      this.addQuantity(item);
     }
+    console.log(this.state.items);
   }
 
   // remove item from cart
   removeItem(item){
+    // item.quantity = 1;
     this.setState({
-      items: this.state.items.filter((itm)=>itm.id!=item.id),
-      totalItems: --this.state.items.length,
-      totalPrice: this.state.totalPrice - item.price,
-      totalDiscount: this.state.totalDiscount - item.discountAmount
+      items: this.state.items.filter((itm)=>itm.id!==item.id),
+      totalItems: this.state.items.length - 1,
+      totalPrice: this.state.totalPrice - (item.price*item.quantity),
+      totalDiscount: this.state.totalDiscount - (item.discountAmount*item.quantity)
     })
+    item.quantity = 1;
+    console.log(this.state.items);
+  }
+
+  // add quantity
+  addQuantity(item){
+    console.log(this.state.items);
+
+    this.setState(prevState => {
+      let itemsCopy = Object.assign([], prevState.items);  // creating copy of state variable jasper
+      
+      itemsCopy.map((itm)=>{
+        if(itm.id === item.id){
+          itm.quantity++;
+          itm.priceAfterDiscount = (itm.price-itm.discountAmount)*itm.quantity;
+          item.priceBeforeDiscount = itm.price*itm.quantity;
+        }
+        return true;
+      })
+      return { 
+        items: itemsCopy,
+        totalPrice: this.state.totalPrice + item.price,
+        totalDiscount: this.state.totalDiscount + item.discountAmount
+      };
+    })
+    console.log('item add', this.state.items);
+  }
+
+  // subtract quantity
+  subtractQuantity(item){
+    this.setState(prevState => {
+      let itemsCopy = Object.assign([], prevState.items);  // creating copy of state variable jasper
+      
+      itemsCopy.map((itm)=>{
+        if(itm.id === item.id){
+          itm.quantity--;
+          itm.priceAfterDiscount = (itm.price-itm.discountAmount)*itm.quantity;
+          item.priceBeforeDiscount = itm.price*itm.quantity;
+        }
+        return true;
+      })
+      return { 
+        items: itemsCopy,
+        totalPrice: this.state.totalPrice - item.price,
+        totalDiscount: this.state.totalDiscount - item.discountAmount
+      };
+    })
+    console.log('item add', this.state.items);
   }
 
   render(){
-    const {cartData, items, totalItems, totalPrice, totalDiscount, totalAmount} = this.state;
+    const {cartData, items, totalItems, totalPrice, totalDiscount} = this.state;
     const noItems = <tr><td className="text-center" colSpan="4">No items added</td></tr>;
     return(
       <>
@@ -100,8 +150,14 @@ class App extends React.Component{
                     return (
                       <tr key={index}>
                         <td>{item.name}</td>
-                        <td>{item.quantity}</td>
-                        <td>${item.price - item.discountAmount}</td>
+                        <td>
+                          <div className="btn-group">
+                            <button className="btn btn-sm btn-success" onClick={()=>this.addQuantity(item)}>+</button> 
+                            <button className="btn btn-outline-success quantity">{item.quantity}</button>
+                            <button className="btn btn-sm btn-success" onClick={()=>this.subtractQuantity(item)}>-</button>
+                          </div>
+                        </td>
+                        <td>${item.priceAfterDiscount}</td>
                         <td><button className="btn btn-danger btn-sm" onClick={()=>this.removeItem(item)}>Remove</button></td>
                       </tr>
                     )
