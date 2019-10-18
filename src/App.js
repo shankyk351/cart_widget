@@ -36,6 +36,7 @@ class App extends React.Component{
   }
 
   addItemToCart(item, discount=0){
+    console.log('item', item);
     item.discountAmount = discount;
     item.priceBeforeDiscount = item.price;
     item.priceAfterDiscount = item.price - discount;
@@ -109,16 +110,22 @@ class App extends React.Component{
           itm.quantity--;
           itm.priceAfterDiscount = (itm.price-itm.discountAmount)*itm.quantity;
           item.priceBeforeDiscount = itm.price*itm.quantity;
+          if(itm.quantity < 1){
+            itemsCopy = itemsCopy.filter((itm)=>itm.id!==item.id);
+            itm.quantity = 1;
+          }
+          console.log('itm', itm);
         }
         return true;
       })
+
       return { 
         items: itemsCopy,
+        totalItems: itemsCopy.length,
         totalPrice: this.state.totalPrice - item.price,
         totalDiscount: this.state.totalDiscount - item.discountAmount
       };
     })
-    console.log('item add', this.state.items);
   }
 
   render(){
