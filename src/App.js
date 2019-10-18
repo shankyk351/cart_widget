@@ -31,12 +31,11 @@ class App extends React.Component{
       })
     })
     .catch((err)=>{
-      console.log('error', err);
+      console.log('error', err.message);
     })
   }
 
   addItemToCart(item, discount=0){
-    console.log('item', item);
     item.discountAmount = discount;
     item.priceBeforeDiscount = item.price;
     item.priceAfterDiscount = item.price - discount;
@@ -60,7 +59,6 @@ class App extends React.Component{
       // alert('already exist');
       this.addQuantity(item);
     }
-    console.log(this.state.items);
   }
 
   // remove item from cart
@@ -73,12 +71,10 @@ class App extends React.Component{
       totalDiscount: this.state.totalDiscount - (item.discountAmount*item.quantity)
     })
     item.quantity = 1;
-    console.log(this.state.items);
   }
 
   // add quantity
   addQuantity(item){
-    console.log(this.state.items);
 
     this.setState(prevState => {
       let itemsCopy = Object.assign([], prevState.items);  // creating copy of state variable jasper
@@ -97,7 +93,6 @@ class App extends React.Component{
         totalDiscount: this.state.totalDiscount + item.discountAmount
       };
     })
-    console.log('item add', this.state.items);
   }
 
   // subtract quantity
@@ -114,7 +109,6 @@ class App extends React.Component{
             itemsCopy = itemsCopy.filter((itm)=>itm.id!==item.id);
             itm.quantity = 1;
           }
-          console.log('itm', itm);
         }
         return true;
       })
