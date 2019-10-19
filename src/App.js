@@ -3,7 +3,9 @@ import './App.css';
 import axios from 'axios';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
-import placeholder from './assets/images/placeholder.png';
+import Listing from './components/listing/listing';
+import OrderSummary from './components/orderSummary/orderSummary';
+import Cart from './components/cart/cart';
 
 class App extends React.Component{
 
@@ -130,110 +132,11 @@ class App extends React.Component{
         <div className="cart-App">  
           <div className="container">
             <h1 className="cart-title">Cart App</h1>
-
-            <div className="cart-header-title">
-              <h5 className="m-0 text-center">Cart</h5>
-              {/* <button className="btn btn-primary btn-sm">Go To Cart</button> */}
-            </div>
-            <div className="order-summary">
-              <table className="table table-bordered table-hover">
-                <thead>
-                  <tr>
-                    <th>Items</th>
-                    <th>Quantity</th>
-                    <th>Price</th>
-                    <th>Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {!items.length&&noItems}
-                  {items&&items.map((item, index)=>{
-                    return (
-                      <tr key={index}>
-                        <td>{item.name}</td>
-                        <td>
-                          <div className="btn-group">
-                            <button className="btn btn-sm btn-success" onClick={()=>this.addQuantity(item)}>+</button> 
-                            <button className="btn btn-outline-success quantity">{item.quantity}</button>
-                            <button className="btn btn-sm btn-success" onClick={()=>this.subtractQuantity(item)}>-</button>
-                          </div>
-                        </td>
-                        <td>${item.priceAfterDiscount}</td>
-                        <td><button className="btn btn-danger btn-sm" onClick={()=>this.removeItem(item)}>Remove</button></td>
-                      </tr>
-                    )
-                  })}
-                </tbody>
-              </table>
-            </div>            
-
+            <Cart items={items} noItems={noItems} addQuantityHandler={(item)=>this.addQuantity(item)} subtractQuantityHandler={(item)=>this.subtractQuantity(item)} removeItemHandler={(item)=>this.removeItem(item)} />
             <div className="row">
-            {/* items grid */}
-              <div className="col-md-8">
-                <div className="cart-header-title">
-                  <h5 className="m-0 text-center">All Items</h5>
-                  {/* <button className="btn btn-primary btn-sm">Go To Cart</button> */}
-                </div>
-                <div className="row">
-                  {cartData.map((item, index)=>{
-                    const discount = (item.price*item.discount)/100;
-                    return(
-                      <div className="col-md-6" key={index}>
-                        <div className="card-deck">
-                          <div className="card">
-                              <div className="card-img" style={{backgroundImage: `url(${placeholder})`}}>
-                                {item.discount&&<span className="discount">{item.discount}% OFF</span>}
-                              </div>
-                              <div className="card-body">
-                                <h5 className="card-title">{item.name}</h5>
-                              </div>
-                              <div className="card-footer">
-                                <div>
-                                  <small className={`text-muted ${item.discount?'line-through':'price'}`}>${item.price}</small>
-                                  {item.discount ? <span className="text-muted ml-2 price">${item.price-discount}</span>:''}
-                                </div>
-                                <button className="btn btn-outline-primary btn-sm" onClick={()=>this.addItemToCart(item, discount)}>Add To Cart</button>
-                              </div>
-                          </div>
-                        </div>  
-                      </div>
-                    )
-                  })}
-                  </div>
-                </div>
-                {/* /items grid */}
-
-                {/* order summary */}
-                <div className="col-md-4">
-                  <div className="cart-header-title">
-                    <h5 className="m-0 text-center">checkout</h5>
-                    {/* <button className="btn btn-primary btn-sm">Go To Cart</button> */}
-                  </div>
-                  <div className="checkout">
-                    <div className="card">
-                        <div className="card-body">
-                          <div className="d-flex justify-content-between">
-                            <p>Items({totalItems})</p>
-                            <p>${totalPrice}</p>
-                          </div>
-                          <div className="d-flex justify-content-between">
-                            <p>Discount</p>
-                            <p>-${totalDiscount}</p>
-                          </div>
-                          <div className="d-flex justify-content-between">
-                            <p>Type Discount</p>
-                            <p>-$0</p>
-                          </div>
-                        </div>
-                        <div className="card-footer d-flex justify-content-between">
-                            <p className="m-0">Order Total</p>
-                            <h5 className="m-0">${totalPrice - totalDiscount}</h5>
-                        </div>
-                    </div>
-                  </div>
-                </div>
-                {/* /order summary */}
-              </div>
+              <Listing cartData={cartData} handleAddItemToCart={(item,discount)=>this.addItemToCart(item, discount)} />
+              <OrderSummary orderData={{totalItems,totalDiscount,totalPrice}}/>
+            </div>
           </div>  
         </div>
       </>
