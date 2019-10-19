@@ -1,0 +1,17 @@
+{
+  "files": {
+    "main.css": "/cart_widget/static/css/main.c77b1aac.chunk.css",
+    "main.js": "/cart_widget/static/js/main.4f18d772.chunk.js",
+    "main.js.map": "/cart_widget/static/js/main.4f18d772.chunk.js.map",
+    "runtime~main.js": "/cart_widget/static/js/runtime~main.bb354097.js",
+    "runtime~main.js.map": "/cart_widget/static/js/runtime~main.bb354097.js.map",
+    "static/css/2.266e55a5.chunk.css": "/cart_widget/static/css/2.266e55a5.chunk.css",
+    "static/js/2.f6ce2c42.chunk.js": "/cart_widget/static/js/2.f6ce2c42.chunk.js",
+    "static/js/2.f6ce2c42.chunk.js.map": "/cart_widget/static/js/2.f6ce2c42.chunk.js.map",
+    "index.html": "/cart_widget/index.html",
+    "precache-manifest.e77f0bdad47721e9e7fbd89e32c5db57.js": "/cart_widget/precache-manifest.e77f0bdad47721e9e7fbd89e32c5db57.js",
+    "service-worker.js": "/cart_widget/service-worker.js",
+    "static/css/2.266e55a5.chunk.css.map": "/cart_widget/static/css/2.266e55a5.chunk.css.map",
+    "static/css/main.c77b1aac.chunk.css.map": "/cart_widget/static/css/main.c77b1aac.chunk.css.map"
+  }
+}
